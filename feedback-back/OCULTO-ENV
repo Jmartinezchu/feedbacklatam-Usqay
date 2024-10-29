@@ -1,0 +1,21 @@
+DB_HOST=localhost 
+DB_PORT=3306
+DB_NAME=feedback_200423
+DB_USER=root
+DB_PASSWORD=
+TEST_ENVIRONMENT=conectado
+EMAIL_USER=cuentafeedback@gmail.com
+EMAIL_PASS=bufoousrtqrgwfqv
+USER_FROM=no-reply@feedbacklatam.com
+
+# HOST=dbfeedback.chv6fyeeu4xa.us-east-2.rds.amazonaws.com
+# DATABASE=feedbackdb
+# USER=admin
+# PASSWORD=feedbackXl1
+
+# HOST=ls-e7ff7fdade13bacf8822a81b88bf337c90a6c83d.csrtxsupkwaj.us-east-1.rds.amazonaws.com
+# DATABASE=dbmaster
+# USER=dbmasteruser
+# PASSWORD=I&f4`^[s5E3.GqZUDg**rSxpNSm,0y2H
+
+

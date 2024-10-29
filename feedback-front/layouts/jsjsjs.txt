@@ -1,0 +1,1068 @@
+<template>
+    <div>
+        <div class="flex" style="align-items:center ">
+            <div class="col-1">
+                <nuxt-link to="/sucursales">
+                    <div style="display:flex; border-radius:15px; align-items:center; justify-content: center;">
+                        <!-- <h6>Crear</h6> -->
+                        <v-btn icon>
+                            <v-icon>arrow_back_ios_new</v-icon>
+                        </v-btn>
+                    </div>
+                </nuxt-link>
+            </div>
+            <div>
+                <h5>Nueva pregunta</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="card">
+                    <div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Ingresa el
+                                            Titulo</label>
+                                        <input class="form-control" type="text" value="" placeholder="Cocina">
+                                        <label for="example-text-input" class="form-control-label">Ingresa la pregunta
+                                        </label>
+                                        <input class="form-control" type="text" placeholder="Pregunta">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <!-- <p>{{ row }}</p> -->
+                                    <input v-model="row" value="0" type="radio" class="btn-check" name="options2"
+                                        id="option0" autocomplete="off">
+                                    <label class="btn w-30 btn-secondary btn_yes_no" for="option0">Por areas</label>
+                                    <input v-model="row" value="1" type="radio" class="btn-check" name="options2"
+                                        id="option1" autocomplete="off">
+                                    <label class="btn w-30 btn-secondary btn_yes_no" for="option1">Si y no</label>
+                                    <!-- <input v-model="row" value="2" type="radio" class="btn-check" name="options2"
+                                        id="option2" autocomplete="off">
+                                    <label class="btn w-30 btn-secondary btn_yes_no" for="option2">Multiple
+                                        1-10</label> -->
+                                </div>
+                                <div v-if="row == 0">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label @click="aumentar()" class="btn btn-secondary mt-2 w-10 btn_yes_no">
+                                                +</label>
+                                            <label @click="disminuir()" class="btn btn-secondary mt-2 w-10 btn_yes_no">
+                                                - </label>
+                                            <label class="btn mt-2  " style="cursor: auto;"> Sub Categorias - {{ contador }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div v-for="qst in question" :key="qst.id" class="form-group">
+                                            <div class="row" v-for="data in qst.subcategia" :key="data.id">
+                                                <div class="col-md-2">
+                                                    <label class="form-control-label">Icono {{ data.id }}</label>
+                                                    <div>
+                                                        <!-- <div class="wrapper">
+                                                            <textarea class="regular-input" v-model="input"></textarea>
+
+                                                            <emoji-picker @emoji="append" :search="search">
+                                                                <button class="emoji-invoker" slot="emoji-invoker"
+                                                                    slot-scope="{ events: { click: clickEvent } }"
+                                                                    @click.stop="clickEvent">
+                                                                    <v-icon>house</v-icon>
+                                                                </button>
+                                                                <div slot="emoji-picker"
+                                                                    slot-scope="{ emojis, insert, display }">
+                                                                    <div class="emoji-picker">
+                                                                        <div class="emoji-picker__search">
+                                                                            <input type="text" v-model="search" v-focus>
+                                                                        </div>
+                                                                        <div>
+                                                                            <div v-for="(emojiGroup, category) in emojis"
+                                                                                :key="category">
+                                                                                <h5>{{ category }}</h5>
+                                                                                <div class="emojis">
+                                                                                    <span
+                                                                                        v-for="(emoji, emojiName) in emojiGroup"
+                                                                                        :key="emojiName"
+                                                                                        @click="insert(emoji)"
+                                                                                        :title="emojiName">{{ emoji
+                                                                                        }}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </emoji-picker>
+                                                        </div> -->
+                                                        <!-- <div>aqui los icons</div> -->
+
+                                                        <!-- <VEmojiPicker :pack="pack" @select="selectEmoji" /> -->
+                                                        <!-- <VueEmoji :value="data.icon" /> -->
+                                                        <!-- <VueEmoji ref="emoji" @input="onInput" width="90" height="50"
+                                                            :value="myText" v-model="data.icon" /> -->
+                                                        <twemoji-textarea :emojiData="emojiData" :skinsSelection="false"
+                                                            :searchEmojisFeat="true" searchEmojiPlaceholder="Buscar"
+                                                            searchEmojiNotFound="Emojis no encontrados"
+                                                            isLoadingLabel="Loading..." :pickerWidth="400" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <label for="example-text-input" class="form-control-label">Sub
+                                                        Categoria
+                                                        {{ data.id }}</label>
+                                                    <input class="form-control" type="text" value=""
+                                                        v-model="data.description" placeholder="Categoria">
+                                                </div>
+
+                                                <div class="col-md-12 mt-2 text-center">
+                                                    <label class="form-control-label">Vista para el cliente</label>
+                                                    <div class="card_question">
+                                                        <div class="card_parts_end">
+
+                                                            <div class="slider">
+                                                                <label class="response_question" for="range"
+                                                                    :style="{ color: getHappinessColor }"><span>
+                                                                        sub categoria
+                                                                        -</span>
+                                                                    {{ mostrar(data) }}- {{ data.res_question }}</label>
+                                                                <input v-model="data.val" type="range" min="0" max="100" />
+
+                                                                <div class="outer">
+                                                                    <label
+                                                                        :style="{ width: `${data.val}%`, borderRadius: greaterThanFifty }"
+                                                                        for="range" aria-hidden="true" class="inner">
+                                                                        <span :style="{ right: getPlacement }">{{
+                                                                            // data.icon.codePointAt(0).toString(16)
+                                                                            data.icon
+                                                                        }}</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div v-if="row == 1">
+                                    <h6 style="text-align:center;" class="pt-3">Opciones a mostrar</h6>
+
+                                    <div class="slider" style="text-align: center;">
+                                        <div style="display:flex; justify-content: center;">
+                                            <div>
+                                                <input value="0" type="radio" class="btn-check" name="options1"
+                                                    id="option11" autocomplete="off">
+                                                <label class="btn btn-secondary btn_yes_no" for="option11">Si</label>
+
+                                                <input value="1" type="radio" class="btn-check" name="options1"
+                                                    id="option12" autocomplete="off">
+                                                <label class="btn btn-secondary btn_yes_no" for="option12">No</label>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div v-if="row == 2">
+                                    <h6 style="text-align:center;" class="pt-3">Opciones a mostrar</h6>
+
+                                    <div class="slider" style="text-align: center;">
+                                        <div style="display:flex; justify-content: center;">
+                                            <!-- {{ qst.res_question }} -->
+                                            <div>
+                                                <input value="0" type="radio" class="btn-check" name="options" id="option1">
+                                                <label class="btn btn-secondary option_red" for="option1">1</label>
+                                                <input value="1" type="radio" class="btn-check" name="options" id="option2">
+                                                <label class="btn btn-secondary option_red" for="option2">2</label>
+                                                <input value="2" type="radio" class="btn-check" name="options" id="option3">
+                                                <label class="btn btn-secondary option_red" for="option3">3</label>
+                                                <input value="3" type="radio" class="btn-check" name="options" id="option4">
+                                                <label class="btn btn-secondary option_red" for="option4">4</label>
+                                                <input value="4" type="radio" class="btn-check" name="options" id="option5">
+                                                <label class="btn btn-secondary option_red" for="option5">5</label>
+                                                <input value="5" type="radio" class="btn-check" name="options" id="option6">
+                                                <label class="btn btn-secondary option_yellow" for="option6">6</label>
+                                                <input value="6" type="radio" class="btn-check" name="options" id="option7">
+                                                <label class="btn btn-secondary option_yellow" for="option7">7</label>
+                                                <input value="7" type="radio" class="btn-check" name="options" id="option8">
+                                                <label class="btn btn-secondary option_yellow" for="option8">8</label>
+                                                <input value="8" type="radio" class="btn-check" name="options" id="option9">
+                                                <label class="btn btn-secondary option_green" for="option9">9</label>
+                                                <input value="9" type="radio" class="btn-check" name="options"
+                                                    id="option10">
+                                                <label class="btn btn-secondary option_green" for="option10">10</label>
+                                            </div>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between">
+                                            <div>No recomendable</div>
+                                            <div>Muy recomendable</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <hr class="horizontal dark">
+                        </div>
+                        <div>
+                            <pre class="m-0">{{ question }}</pre>
+                        </div>
+
+                        <button class="btn btn-danger btn-sm ms-auto mx-5" style="font-size: 15px;">Crear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import EmojiPicker from 'vue-emoji-picker'
+import { TwemojiTextarea } from "@kevinfaguiar/vue-twemoji-picker";
+import EmojiData from "@kevinfaguiar/vue-twemoji-picker/emoji-data/en/emoji-all-groups.json";
+import EmojiGroups from "@kevinfaguiar/vue-twemoji-picker/emoji-data/emoji-groups.json";
+
+// import VueEmoji from 'emoji-vue'
+// import VEmojiPicker from 'v-emoji-picker';
+// import packData from 'v-emoji-picker/data/emojis.json';
+
+export default {
+
+    name: 'FeedbackAppCreateQuestion',
+    components: {
+        "twemoji-textarea": TwemojiTextarea,
+        // VueEmoji,
+        // VEmojiPicker
+        EmojiPicker
+    },
+    data() {
+        return {
+            // pack: packData,
+            emojiData: EmojiData,
+            emojiGroups: EmojiGroups,
+
+
+            input: '',
+            search: '',
+
+
+            myText: "🥗",
+            row: 0,
+            contador: 1,
+            lang: "en",
+            valorEmoji: '',
+            syncedContent: "",
+            contentChangedValue: "",
+            contentChangedHtmlValue: "",
+
+            question: [{
+                titulo: null,
+                question: null,
+                res_question: null,
+                subcategia: [
+                    {
+                        id: 1,
+                        description: null,
+                        icon: '🥗',
+                        val: 50,
+                        res_question: '',
+                        options: [
+                            { id: 1, valor: 'Muy insatisfecho 😒' },
+                            { id: 2, valor: 'Insatisfecho 🥱' },
+                            { id: 3, valor: 'Puede Mejorar 🙄' },
+                            { id: 4, valor: 'Satisfecho 🙂' },
+                            { id: 5, valor: 'Muy Satisfecho 😉' },
+                        ]
+                    },
+                ],
+                options: [],
+                icon: null,
+                val: null,
+                tipo: null
+            }
+            ]
+        };
+    },
+    mounted() {
+        // this.stringEmoji('🥗');
+    },
+    computed: {
+        getPlacement: function () {
+            return `${-0.009 * (50 * -1 + 104)}em`;
+        },
+        greaterThanFifty: function () {
+            return 51 > 50 ? `var(--roundness)` : `0`;
+        },
+        getHappinessColor: function () {
+            return `rgba(255, ${50 + (50 / 100) * 50}, ${Math.floor((50 * -1) / 7.692) + 13}`;
+        },
+    },
+    directives: {
+        focus: {
+            inserted(el) {
+                el.focus()
+            },
+        },
+    },
+    methods: {
+        append(emoji) {
+            this.input += emoji
+        },
+        insert(emoji) {
+            this.input += emoji
+        },
+        onInput(event) {
+            //event.data contains the value of the textarea
+        },
+        clearTextarea() {
+            this.$refs.emoji.clear()
+        },
+        // selectEmoji(emoji) {
+        //     console.log(emoji)
+        // },
+        agregarsubcategoria(val) {
+            this.question[0].subcategia.push({
+                id: val,
+                description: null,
+                icon: '🥗',
+                val: 50,
+                res_question: '',
+                options: [
+                    { id: 1, valor: 'Muy insatisfecho 😒' },
+                    { id: 2, valor: 'Insatisfecho 🥱' },
+                    { id: 3, valor: 'Puede Mejorar 🙄' },
+                    { id: 4, valor: 'Satisfecho 🙂' },
+                    { id: 5, valor: 'Muy Satisfecho 😉' },
+                ]
+            })
+        },
+
+        mostrar(txt) {
+            const arr = txt.options;
+            let todoArr = arr?.length;
+            let paso = 100 / todoArr;
+            let response = txt.res_question;
+            let num_id_res = txt.id;
+            let numStop = 100 / (todoArr - 1);
+            for (let i = 0; i < todoArr; i++) {
+                // let limbarr =txt.options[index].id;
+                if (txt.val >= paso * i && txt.val <= paso * (i + 1)) {
+                    response = arr[i].valor;
+                    num_id_res = arr[i].id
+                    txt.res_question = arr[i].id
+                    txt.val = i * numStop;
+                    // console.log(txt.res_question);
+                }
+            };
+            return `${response}`;
+        },
+
+        disminuir() {
+
+            if (this.contador > 1) {
+                this.question[0].subcategia.pop();
+                this.contador--;
+            } else {
+                console.log("no se puede menos");
+            }
+        },
+        aumentar() {
+            if (this.contador < 3) {
+                this.contador++;
+                this.agregarsubcategoria(this.contador);
+            } else {
+                console.log("no se puede más");
+            }
+        },
+    },
+};
+</script>
+
+<style scoped>
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.regular-input {
+    /* padding: 0.5rem 1rem; */
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    /* width: 20rem; */
+    /* height: 12rem; */
+    /* outline: none; */
+}
+
+.regular-input:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, .5);
+}
+
+.emoji-invoker {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.emoji-invoker:hover {
+    transform: scale(1.1);
+}
+
+.emoji-invoker>svg {
+    fill: #b1c6d0;
+}
+
+.emoji-picker {
+    position: absolute;
+    z-index: 1;
+    font-family: Montserrat;
+    border: 1px solid #ccc;
+    width: 15rem;
+    height: 20rem;
+    overflow: scroll;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 1px 1px 8px #c7dbe6;
+}
+
+.emoji-picker__search {
+    display: flex;
+}
+
+.emoji-picker__search>input {
+    flex: 1;
+    border-radius: 10rem;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    outline: none;
+}
+
+.emoji-picker h5 {
+    margin-bottom: 0;
+    color: #b1b1b1;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: default;
+}
+
+.emoji-picker .emojis {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.emoji-picker .emojis:after {
+    content: "";
+    flex: auto;
+}
+
+.emoji-picker .emojis span {
+    padding: 0.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.emoji-picker .emojis span:hover {
+    background: #ececec;
+    cursor: pointer;
+}
+
+.exampleInputEmoji {
+    position: absolute;
+    padding-bottom: 50px;
+}
+
+.your-input-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Blurred {
+    display: none !important;
+}
+</style>
+
+
+
+
+
+
+
+
+
+<template>
+    <div>
+        <div class="flex" style="align-items:center ">
+            <div class="col-1">
+                <nuxt-link to="/sucursales">
+                    <div style="display:flex; border-radius:15px; align-items:center; justify-content: center;">
+                        <!-- <h6>Crear</h6> -->
+                        <v-btn icon>
+                            <v-icon>arrow_back_ios_new</v-icon>
+                        </v-btn>
+                    </div>
+                </nuxt-link>
+            </div>
+            <div>
+                <h5>Nueva pregunta</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="card">
+                    <div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Ingresa el
+                                            Titulo</label>
+                                        <input class="form-control" type="text" value="" placeholder="Cocina">
+                                        <label for="example-text-input" class="form-control-label">Ingresa la pregunta
+                                        </label>
+                                        <input class="form-control" type="text" placeholder="Pregunta">
+
+                                    </div>
+                                </div> -->
+                                <div class="col-md-12">
+                                    <!-- <p>{{ row }}</p> -->
+                                    <input v-model="typeQuestion" value="simple" type="radio" class="btn-check"
+                                        name="option0" id="option0" autocomplete="off">
+                                    <label class="btn w-30 btn-secondary btn_yes_no" for="option0">Simple</label>
+                                    <input v-model="typeQuestion" value="multiple" type="radio" class="btn-check"
+                                        name="option1" id="option1" autocomplete="off">
+                                    <label class="btn w-30 btn-secondary btn_yes_no" for="option1">Multiple</label>
+
+                                </div>
+                                <div v-if="typeQuestion === 'simple'">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="example-text-input" class="form-control-label">Ingresa el
+                                                titulo</label>
+                                            <input class="form-control" type="text" value="" v-model="qstSimple.titulo"
+                                                placeholder="Estadia">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <label class="form-control-label">Icono
+                                                                    <v-dialog v-model="dialog" width="500">
+                                                                        <template v-slot:activator="{ on, attrs }">
+                                                                            <button v-bind="attrs" v-on="on">
+                                                                                <v-icon class="mx-2">info</v-icon>
+                                                                            </button>
+                                                                        </template>
+                                                                        <v-card>
+                                                                            <v-card-title class="text-h5 grey lighten-2">
+                                                                                Añadir un icono
+                                                                            </v-card-title>
+
+                                                                            <v-card-text>
+                                                                                Windows: <br>
+                                                                                <span style="opacity: 0;">---</span>Windows
+                                                                                + . <br>
+                                                                                Mac: <br>
+                                                                                <span style="opacity: 0;">---</span>Command
+                                                                                + . <br>
+                                                                            </v-card-text>
+
+                                                                            <v-divider></v-divider>
+
+                                                                            <v-card-actions>
+                                                                                <v-spacer></v-spacer>
+                                                                                <v-btn color="bg-danger text-white" text
+                                                                                    @click="dialog = false">
+                                                                                    ok
+                                                                                </v-btn>
+                                                                            </v-card-actions>
+                                                                        </v-card>
+                                                                    </v-dialog>
+                                                                </label>
+                                                                {{ qstSimple.emoticon }}{{ qstSimple.icon }}
+                                                                <button @click="converString">convertir emoticon</button>
+                                                                <input class="form-control" type="text" value=""
+                                                                    v-model="qstSimple.emoticon" placeholder="windows + .">
+                                                            </div>
+                                                            <div class="col-md-10 pt-2">
+                                                                <label for="example-text-input"
+                                                                    class="form-control-label">Ingresa la pregunta
+                                                                </label>
+                                                                <input class="form-control" type="text"
+                                                                    v-model="qstSimple.question" value=""
+                                                                    placeholder="¿Que te parecio la estadia dentro del local?">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <pre>{{ qstSimple }}</pre>
+                                </div>
+
+                                <div v-if="typeQuestion === 'multiple'">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="example-text-input" class="form-control-label">Ingresa el
+                                                Area de trabajo</label>
+                                            <input class="form-control" type="text" value="" placeholder="Atencion">
+                                            <label for="example-text-input" class="form-control-label">Ingresa la pregunta
+                                            </label>
+                                            <input class="form-control" type="text"
+                                                placeholder="¿Como calificas el servicio de Atención?">
+                                        </div>
+                                        <div class="form-group">
+                                            <label @click="aumentar()" class="btn btn-secondary mt-2 w-10 btn_yes_no">
+                                                +</label>
+                                            <label @click="disminuir()" class="btn btn-secondary mt-2 w-10 btn_yes_no">
+                                                - </label>
+                                            <label class="btn mt-2  " style="cursor: auto;"> Sub Categorias = {{ contador }}
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div v-for="(qst, index) in qstMultiple" :key="index" class="form-group">
+                                            <div class="row" v-for="(data, index) in qst.subcategia" :key="index">
+                                                <div class="col-md-2">
+                                                    <label class="form-control-label">Icono {{ index + 1 }} <v-dialog
+                                                            v-model="dialog" width="500">
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <button v-bind="attrs" v-on="on">
+                                                                    <v-icon class="mx-2">info</v-icon>
+                                                                </button>
+                                                            </template>
+                                                            <v-card>
+                                                                <v-card-title class="text-h5 grey lighten-2">
+                                                                    Añadir un icono
+                                                                </v-card-title>
+
+                                                                <v-card-text>
+                                                                    Windows: <br>
+                                                                    <span style="opacity: 0;">---</span>Windows
+                                                                    + . <br>
+                                                                    Mac: <br>
+                                                                    <span style="opacity: 0;">---</span>Command
+                                                                    + . <br>
+                                                                </v-card-text>
+
+                                                                <v-divider></v-divider>
+
+                                                                <v-card-actions>
+                                                                    <v-spacer></v-spacer>
+                                                                    <v-btn color="bg-danger text-white" text
+                                                                        @click="dialog = false">
+                                                                        ok
+                                                                    </v-btn>
+                                                                </v-card-actions>
+                                                            </v-card>
+                                                        </v-dialog></label>
+                                                    <input class="form-control" type="text" value="" v-model="data.icon"
+                                                        placeholder="windows + .">
+                                                    <div>
+                                                        <!-- <div class="wrapper">
+                                                            <textarea class="regular-input" v-model="data.icon"></textarea>
+
+                                                            <emoji-picker @emoji="this.input += emoji" :search="search">
+                                                                <button class="emoji-invoker" slot="emoji-invoker"
+                                                                    slot-scope="{ events: { click: clickEvent } }"
+                                                                    @click.stop="clickEvent">
+                                                                    <v-icon>house</v-icon>
+                                                                </button>
+                                                                <div slot="emoji-picker"
+                                                                    slot-scope="{ emojis, insert, display }">
+                                                                    <div class="emoji-picker">
+                                                                        <div class="emoji-picker__search">
+                                                                            <input type="text" v-model="search" v-focus>
+                                                                        </div>
+                                                                        <div>
+                                                                            <div v-for="(emojiGroup, category) in emojis"
+                                                                                :key="category">
+                                                                                <h5>{{ category }}</h5>
+                                                                                <div class="emojis">
+                                                                                    <span
+                                                                                        v-for="(emoji, emojiName) in emojiGroup"
+                                                                                        :key="emojiName"
+                                                                                        @click="insert(emoji)"
+                                                                                        :title="emojiName">{{ emoji
+                                                                                        }}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </emoji-picker>
+                                                        </div> -->
+                                                        <!-- <div>aqui los icons</div> -->
+
+                                                        <!-- <VEmojiPicker :pack="pack" @select="selectEmoji" /> -->
+                                                        <!-- <VueEmoji :value="data.icon" /> -->
+                                                        <!-- <VueEmoji ref="emoji" @input="onInput" width="90" height="50"
+                                                            :value="myText" v-model="data.icon" /> -->
+                                                        <!-- <twemoji-textarea :emojiData="emojiData" :emojiGroups="emojiGroups"
+                                                            :skinsSelection="false" :searchEmojisFeat="true"
+                                                            searchEmojiPlaceholder="Search here."
+                                                            searchEmojiNotFound="Emojis not found." placeholder="<- Select"
+                                                            isLoadingLabel="Loading..." :pickerWidth="500"
+                                                            :content.sync="data.icon" :initialContent=data.icon /> -->
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-10 pt-2">
+                                                    <label for="example-text-input" class="form-control-label">Sub
+                                                        Categoria
+                                                        {{ index + 1 }}</label>
+                                                    <input class="form-control" type="text" value=""
+                                                        v-model="data.description" placeholder="Meseros">
+                                                </div>
+
+                                                <!-- <div class="col-md-12 mt-2 text-center">
+                                                    <label class="form-control-label">Vista para el cliente</label>
+                                                    <div class="card_question">
+                                                        <div class="card_parts_end">
+
+                                                            <div class="slider">
+                                                                <label class="response_question" for="range"
+                                                                    :style="{ color: getHappinessColor }"><span>
+                                                                        sub categoria
+                                                                        -</span>
+                                                                    {{ mostrar(data) }}- {{ data.res_question }}</label>
+                                                                <input v-model="data.val" type="range" min="0" max="100" />
+
+                                                                <div class="outer">
+                                                                    <label
+                                                                        :style="{ width: `${data.val}%`, borderRadius: greaterThanFifty }"
+                                                                        for="range" aria-hidden="true" class="inner">
+                                                                        <span :style="{ right: getPlacement }">{{
+                                                                            // data.icon.codePointAt(0).toString(16)
+                                                                            data.icon
+                                                                        }}</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <pre>{{ qstMultiple }}</pre>
+                                </div>
+                            </div>
+                            <hr class="horizontal dark">
+                        </div>
+                        <div>
+                            <!-- <pre class="m-0">{{ question }}</pre> -->
+                        </div>
+
+                        <button class="btn btn-danger btn-sm ms-auto mx-5" style="font-size: 15px;">Crear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import EmojiPicker from 'vue-emoji-picker'
+import { TwemojiTextarea } from "@kevinfaguiar/vue-twemoji-picker";
+import EmojiData from "@kevinfaguiar/vue-twemoji-picker/emoji-data/en/emoji-all-groups.json";
+import EmojiGroups from "@kevinfaguiar/vue-twemoji-picker/emoji-data/emoji-groups.json";
+// import VueEmoji from 'emoji-vue'
+// import VEmojiPicker from 'v-emoji-picker';
+// import packData from 'v-emoji-picker/data/emojis.json';
+
+export default {
+
+    name: 'FeedbackAppCreateQuestion',
+    components: {
+        "twemoji-textarea": TwemojiTextarea,
+        // VueEmoji,
+        // VEmojiPicker
+        EmojiPicker
+    },
+    data() {
+        return {
+            dialog: false,
+            // pack: packData,
+            emojiData: EmojiData,
+            emojiGroups: EmojiGroups,
+            id_Form: null,
+            qstSimple: {
+                titulo: null,
+                question: '',
+                icon: null,
+                emoticon: null,
+                val: 50,
+                tipo: 'simple',
+                id_Form: null,
+            },
+            qstMultiple: [{
+                titulo: null,
+                question: '',
+                icon: null,
+                val: null,
+                tipo: 'multiple',
+                id_Form: null,
+                subcategia: [
+                    {
+                        titulo: null,
+                        icon: null,
+                        id_question: null
+                    },
+                ]
+            }],
+            input: '',
+            search: '',
+
+
+            myText: "🥗",
+            typeQuestion: 'simple',
+            row: 0,
+            contador: 1,
+            lang: "en",
+            valorEmoji: '',
+            syncedContent: "",
+            contentChangedValue: "",
+            contentChangedHtmlValue: "",
+
+            question: [{
+                titulo: null,
+                question: null,
+                res_question: null,
+                subcategia: [
+                    {
+                        titulo: null,
+                        icon: '🥗',
+                        id_question: null
+                    },
+                ],
+                options: null,
+                icon: null,
+                val: null,
+                tipo: null
+            }
+            ]
+        };
+    },
+    mounted() {
+        // this.stringEmoji('🥗');
+        // console.log(this.$route.params.idForm);
+        this.qstSimple.id_Form = this.$route.params.idForm
+        this.qstMultiple.id_Form = this.$route.params.idForm
+    },
+    computed: {
+        getPlacement: function () {
+            return `${-0.009 * (50 * -1 + 104)}em`;
+        },
+        greaterThanFifty: function () {
+            return 51 > 50 ? `var(--roundness)` : `0`;
+        },
+        getHappinessColor: function () {
+            return `rgba(255, ${50 + (50 / 100) * 50}, ${Math.floor((50 * -1) / 7.692) + 13}`;
+        },
+    },
+    directives: {
+        focus: {
+            inserted(el) {
+                el.focus()
+            },
+        },
+    },
+    methods: {
+        converString() {
+            if (this.qstSimple.emoticon != "") {
+                this.qstSimple.icon = this.qst.emoticon.codePointAt(0).toString(16);
+            } else {
+                alert("no hay icono agregado");
+            }
+        },
+        append(emoji) {
+            this.input += emoji
+        },
+        insert(emoji) {
+            this.input += emoji
+        },
+        onInput(event) {
+            //event.data contains the value of the textarea
+        },
+        clearTextarea() {
+            this.$refs.emoji.clear()
+        },
+        // selectEmoji(emoji) {
+        //     console.log(emoji)
+        // },
+        agregarsubcategoria() {
+            this.qstMultiple[0].subcategia.push({
+                titulo: null,
+                icon: null,
+                id_question: null
+            })
+        },
+
+        mostrar(txt) {
+            const arr = txt.options;
+            let todoArr = arr?.length;
+            let paso = 100 / todoArr;
+            let response = txt.res_question;
+            let num_id_res = txt.id;
+            let numStop = 100 / (todoArr - 1);
+            for (let i = 0; i < todoArr; i++) {
+                // let limbarr =txt.options[index].id;
+                if (txt.val >= paso * i && txt.val <= paso * (i + 1)) {
+                    response = arr[i].valor;
+                    num_id_res = arr[i].id
+                    txt.res_question = arr[i].id
+                    txt.val = i * numStop;
+                    // console.log(txt.res_question);
+                }
+            };
+            return `${response}`;
+        },
+
+        disminuir() {
+
+            if (this.contador > 1) {
+                this.qstMultiple[0].subcategia.pop();
+                this.contador--;
+            } else {
+                console.log("no se puede menos");
+            }
+        },
+        aumentar() {
+            if (this.contador < 3) {
+                this.contador++;
+                this.agregarsubcategoria(this.contador);
+            } else {
+                console.log("no se puede más");
+            }
+        },
+    },
+};
+</script>
+
+<style scoped>
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.regular-input {
+    /* padding: 0.5rem 1rem; */
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    /* width: 20rem; */
+    /* height: 12rem; */
+    /* outline: none; */
+}
+
+.regular-input:focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, .5);
+}
+
+.emoji-invoker {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 0;
+    background: transparent;
+    border: 0;
+}
+
+.emoji-invoker:hover {
+    transform: scale(1.1);
+}
+
+.emoji-invoker>svg {
+    fill: #b1c6d0;
+}
+
+.emoji-picker {
+    position: absolute;
+    z-index: 1;
+    font-family: Montserrat;
+    border: 1px solid #ccc;
+    width: 15rem;
+    height: 20rem;
+    overflow: scroll;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 1px 1px 8px #c7dbe6;
+}
+
+.emoji-picker__search {
+    display: flex;
+}
+
+.emoji-picker__search>input {
+    flex: 1;
+    border-radius: 10rem;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    outline: none;
+}
+
+.emoji-picker h5 {
+    margin-bottom: 0;
+    color: #b1b1b1;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    cursor: default;
+}
+
+.emoji-picker .emojis {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.emoji-picker .emojis:after {
+    content: "";
+    flex: auto;
+}
+
+.emoji-picker .emojis span {
+    padding: 0.2rem;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.emoji-picker .emojis span:hover {
+    background: #ececec;
+    cursor: pointer;
+}
+
+.exampleInputEmoji {
+    position: absolute;
+    padding-bottom: 50px;
+}
+
+.your-input-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Blurred {
+    display: none !important;
+}
+</style>
